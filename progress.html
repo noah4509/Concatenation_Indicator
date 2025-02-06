@@ -45,24 +45,21 @@
         id="progress-slider"
       >
     </div>
-
     <script>
       var t = TrelloPowerUp.iframe();
-
-      // Load initial progress
-      t.get('card', 'shared', '% COMPLETE', 0)
+      
+      t.get('card', 'shared', 'percentComplete', 0)
         .then(function(progress) {
           document.getElementById('progress-display').textContent = progress + '%';
           document.getElementById('progress-fill').style.width = progress + '%';
           document.getElementById('progress-slider').value = progress;
         });
 
-      // Handle progress updates
       document.getElementById('progress-slider').addEventListener('input', function(e) {
         var progress = parseInt(e.target.value, 10);
         document.getElementById('progress-display').textContent = progress + '%';
         document.getElementById('progress-fill').style.width = progress + '%';
-        t.set('card', 'shared', '% COMPLETE', progress)
+        t.set('card', 'shared', 'percentComplete', progress)
           .then(function() {
             t.closePopup();
           });
