@@ -11,37 +11,24 @@
     <script>
       window.TrelloPowerUp.initialize({
         'card-badges': function(t, options) {
-          return t.card('customFieldItems')
-            .then(function(card) {
-              // Find the % COMPLETE custom field
-              const progressField = card.customFieldItems.find(field => 
-                field.name && field.name.toLowerCase().includes('complete'));
-              
-              const progress = progressField ? progressField.value.number : 0;
-              
+          return t.get('card', 'shared', '% COMPLETE')
+            .then(function(progress) {
               return [{
-                icon: 'https://raw.githubusercontent.com/noah4509/Concatenation_Indicator/main/load.png',
-                text: progress + '%',
+                text: (progress || '0') + '%',
                 color: progress === 100 ? 'green' : 'blue'
               }];
             });
         },
         'card-detail-badges': function(t, options) {
-          return t.card('customFieldItems')
-            .then(function(card) {
-              // Find the % COMPLETE custom field
-              const progressField = card.customFieldItems.find(field => 
-                field.name && field.name.toLowerCase().includes('complete'));
-              
-              const progress = progressField ? progressField.value.number : 0;
-              
+          return t.get('card', 'shared', '% COMPLETE')
+            .then(function(progress) {
               return [{
-                title: 'Progress',
-                text: progress + '%',
+                title: '% COMPLETE',
+                text: (progress || '0') + '%',
                 color: progress === 100 ? 'green' : 'blue',
                 callback: function(t) {
                   return t.popup({
-                    title: 'Update Progress',
+                    title: 'Update % Complete',
                     url: './progress.html',
                     height: 120
                   });
