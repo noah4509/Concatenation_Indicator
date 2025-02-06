@@ -2,7 +2,7 @@
   "name": "Progress Tracker",
   "details": "Track progress percentage on cards",
   "icon": {
-    "url": "./icon.svg"
+    "url": "./icon.png"
   },
   "author": "Your Name",
   "capabilities": [
