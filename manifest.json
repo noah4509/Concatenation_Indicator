@@ -14,5 +14,6 @@
     "iframe": {
       "url": "./index.html"
     }
-  }
+  },
+  "iframeConnectorUrl": "https://noah4509.github.io/Concatenation_Indicator/index.html"
 }
