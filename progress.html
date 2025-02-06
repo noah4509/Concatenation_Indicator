@@ -47,21 +47,35 @@
     <script>
       var t = TrelloPowerUp.iframe();
 
-      // Load initial progress
-      t.get('card', 'shared', 'progress', 0)
-        .then(function(progress) {
+      // Load initial progress from custom field
+      t.card('customFieldItems')
+        .then(function(card) {
+          const progressField = card.customFieldItems.find(field => 
+            field.name && field.name.toLowerCase().includes('complete'));
+          
+          const progress = progressField ? progressField.value.number : 0;
+          
           document.getElementById('progress-display').textContent = progress + '%';
           document.getElementById('progress-fill').style.width = progress + '%';
           document.getElementById('progress-slider').value = progress;
         });
 
-      // Handle progress updates
+      // Update custom field when progress changes
       document.getElementById('progress-slider').addEventListener('input', function(e) {
         var progress = parseInt(e.target.value, 10);
-        document.getElementById('progress-display').textContent = progress + '%';
-        document.getElementById('progress-fill').style.width = progress + '%';
-        t.set('card', 'shared', 'progress', progress)
+        
+        t.card('customFieldItems')
+          .then(function(card) {
+            const progressField = card.customFieldItems.find(field => 
+              field.name && field.name.toLowerCase().includes('complete'));
+            
+            if (progressField) {
+              return t.set('customField', progressField.id, 'number', progress);
+            }
+          })
           .then(function() {
+            document.getElementById('progress-display').textContent = progress + '%';
+            document.getElementById('progress-fill').style.width = progress + '%';
             t.closePopup();
           });
       });
