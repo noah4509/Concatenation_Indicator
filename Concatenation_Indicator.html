@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script>
+      var Promise = TrelloPowerUp.Promise;
+      var t = TrelloPowerUp.iframe();
+
+      // Function to save progress
+      function saveProgress(progress) {
+        return t.set('card', 'shared', 'progress', progress)
+      }
+
+      // Function to get progress
+      function getProgress() {
+        return t.get('card', 'shared', 'progress', 0)
+      }
+
+      // Render the progress bar
+      function renderProgress() {
+        getProgress().then(function(progress) {
+          var content = document.getElementById('content');
+          content.innerHTML = `
+            <div class="progress-wrapper">
+              <div class="progress-text">${progress}%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${progress}%"></div>
+              </div>
+              <input type="range" min="0" max="100" value="${progress}" class="progress-slider">
+            </div>
+          `;
+
+          var slider = content.querySelector('.progress-slider');
+          slider.addEventListener('input', function(e) {
+            var newProgress = e.target.value;
+            saveProgress(newProgress);
+            renderProgress();
+          });
+        });
+      }
+
+      t.render(function() {
+        renderProgress();
+      });
+
+      // Initialize the Power-Up
+      TrelloPowerUp.initialize({
+        'card-badges': function(t, options) {
+          return getProgress().then(function(progress) {
+            return [{
+              text: progress + '%',
+              color: progress == 100 ? 'green' : 'blue'
+            }];
+          });
+        },
+        'card-detail-badges': function(t, options) {
+          return getProgress().then(function(progress) {
+            return [{
+              title: 'Progress',
+              text: progress + '%',
+              color: progress == 100 ? 'green' : 'blue',
+              callback: function(t) {
+                return t.popup({
+                  title: "Update Progress",
+                  url: './index.html',
+                  height: 120
+                });
+              }
+            }];
+          });
+        }
+      });
+    </script>
+    <style>
+      .progress-wrapper {
+        padding: 10px;
+      }
+      .progress-text {
+        text-align: center;
+        margin-bottom: 5px;
+      }
+      .progress-bar {
+        height: 10px;
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background-color: #0079bf;
+        transition: width 0.3s ease;
+      }
+      .progress-slider {
+        width: 100%;
+        margin-top: 10px;
+      }
+    </style>
+  </body>
+</html>
