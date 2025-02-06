@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="trello-power-up-allowed-origins" content="https://trello.com">
+    <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+    <style>
+      .progress-wrapper {
+        padding: 1rem;
+      }
+      .progress-bar {
+        height: 8px;
+        background-color: #E2E8F0;
+        border-radius: 4px;
+        margin: 8px 0;
+      }
+      .progress-fill {
+        height: 100%;
+        background-color: #0079BF;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+      }
+      .progress-slider {
+        width: 100%;
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress-wrapper">
+      <div id="progress-display">0%</div>
+      <div class="progress-bar">
+        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+      </div>
+      <input 
+        type="range" 
+        min="0" 
+        max="100" 
+        value="0" 
+        class="progress-slider" 
+        id="progress-slider"
+      >
+    </div>
+
+    <script>
+      var t = TrelloPowerUp.iframe();
+
+      // Load initial progress
+      t.get('card', 'shared', 'progress', 0)
+        .then(function(progress) {
+          document.getElementById('progress-display').textContent = progress + '%';
+          document.getElementById('progress-fill').style.width = progress + '%';
+          document.getElementById('progress-slider').value = progress;
+        });
+
+      // Handle progress updates
+      document.getElementById('progress-slider').addEventListener('input', function(e) {
+        var progress = parseInt(e.target.value, 10);
+        document.getElementById('progress-display').textContent = progress + '%';
+        document.getElementById('progress-fill').style.width = progress + '%';
+        t.set('card', 'shared', 'progress', progress)
+          .then(function() {
+            t.closePopup();
+          });
+      });
+    </script>
+  </body>
+</html>
