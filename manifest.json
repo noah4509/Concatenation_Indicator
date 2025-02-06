@@ -1,0 +1,18 @@
+{
+  "name": "Progress Tracker",
+  "details": "Track progress percentage on cards",
+  "icon": {
+    "url": "./icon.svg"
+  },
+  "author": "Your Name",
+  "capabilities": [
+    "card-badges",
+    "card-detail-badges",
+    "callback"
+  ],
+  "connectors": {
+    "iframe": {
+      "url": "./index.html"
+    }
+  }
+}
