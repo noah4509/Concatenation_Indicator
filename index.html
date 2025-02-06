@@ -9,41 +9,35 @@
   </head>
   <body>
     <script>
-      // Initialize the Power-Up
       window.TrelloPowerUp.initialize({
-        // Start by declaring the capabilities
-        'board-buttons': function(t, options) {
-          return [{
-            icon: {
-              dark: 'https://raw.githubusercontent.com/noah4509/Concatenation_Indicator/main/load.png',
-              light: 'https://raw.githubusercontent.com/noah4509/Concatenation_Indicator/main/load.png'
-            },
-            text: 'Progress',
-            callback: function(t) {
-              return t.modal({
-                url: './progress.html',
-                height: 200,
-                title: 'Progress Tracker'
-              });
-            }
-          }];
-        },
         'card-badges': function(t, options) {
-          return t.get('card', 'shared', 'progress')
-            .then(function(progress) {
+          return t.card('customFieldItems')
+            .then(function(card) {
+              // Find the % COMPLETE custom field
+              const progressField = card.customFieldItems.find(field => 
+                field.name && field.name.toLowerCase().includes('complete'));
+              
+              const progress = progressField ? progressField.value.number : 0;
+              
               return [{
                 icon: 'https://raw.githubusercontent.com/noah4509/Concatenation_Indicator/main/load.png',
-                text: (progress || '0') + '%',
+                text: progress + '%',
                 color: progress === 100 ? 'green' : 'blue'
               }];
             });
         },
         'card-detail-badges': function(t, options) {
-          return t.get('card', 'shared', 'progress')
-            .then(function(progress) {
+          return t.card('customFieldItems')
+            .then(function(card) {
+              // Find the % COMPLETE custom field
+              const progressField = card.customFieldItems.find(field => 
+                field.name && field.name.toLowerCase().includes('complete'));
+              
+              const progress = progressField ? progressField.value.number : 0;
+              
               return [{
                 title: 'Progress',
-                text: (progress || '0') + '%',
+                text: progress + '%',
                 color: progress === 100 ? 'green' : 'blue',
                 callback: function(t) {
                   return t.popup({
