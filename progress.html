@@ -9,10 +9,12 @@
     <style>
       .progress-wrapper {
         padding: 1rem;
+        background: #2C3E50;
+        color: white;
       }
       .progress-bar {
         height: 8px;
-        background-color: #E2E8F0;
+        background-color: rgba(255,255,255,0.2);
         border-radius: 4px;
         margin: 8px 0;
       }
@@ -47,35 +49,21 @@
     <script>
       var t = TrelloPowerUp.iframe();
 
-      // Load initial progress from custom field
-      t.card('customFieldItems')
-        .then(function(card) {
-          const progressField = card.customFieldItems.find(field => 
-            field.name && field.name.toLowerCase().includes('complete'));
-          
-          const progress = progressField ? progressField.value.number : 0;
-          
+      // Load initial progress
+      t.get('card', 'shared', '% COMPLETE', 0)
+        .then(function(progress) {
           document.getElementById('progress-display').textContent = progress + '%';
           document.getElementById('progress-fill').style.width = progress + '%';
           document.getElementById('progress-slider').value = progress;
         });
 
-      // Update custom field when progress changes
+      // Handle progress updates
       document.getElementById('progress-slider').addEventListener('input', function(e) {
         var progress = parseInt(e.target.value, 10);
-        
-        t.card('customFieldItems')
-          .then(function(card) {
-            const progressField = card.customFieldItems.find(field => 
-              field.name && field.name.toLowerCase().includes('complete'));
-            
-            if (progressField) {
-              return t.set('customField', progressField.id, 'number', progress);
-            }
-          })
+        document.getElementById('progress-display').textContent = progress + '%';
+        document.getElementById('progress-fill').style.width = progress + '%';
+        t.set('card', 'shared', '% COMPLETE', progress)
           .then(function() {
-            document.getElementById('progress-display').textContent = progress + '%';
-            document.getElementById('progress-fill').style.width = progress + '%';
             t.closePopup();
           });
       });
